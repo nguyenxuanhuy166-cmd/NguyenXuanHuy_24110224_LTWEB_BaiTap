@@ -1,84 +1,45 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Trang chủ - Cửa hàng</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; }
-    .header { background-color: #343a40; color: white; padding: 15px 20px; text-align: center; }
-    .nav { background-color: #007bff; padding: 10px; text-align: center; }
-    .nav a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; }
-    .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-    .section-title { margin-bottom: 20px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
-    
-    .product-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 20px;
-    }
-    .product-card {
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        text-align: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        transition: transform 0.2s;
-    }
-    .product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .product-image { max-width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; }
-    .product-title { font-size: 16px; margin: 10px 0; font-weight: bold; color: #333; }
-    .product-price { color: #d9534f; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
-    .product-link {
-        display: inline-block;
-        padding: 8px 15px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .product-link:hover { background-color: #0056b3; }
-</style>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
 </head>
 <body>
 
-<div class="header">
-    <h1>Cửa Hàng Trực Tuyến</h1>
-</div>
-<div class="nav">
-    <a href="<c:url value='/'/>">Trang chủ</a>
-    <a href="<c:url value='/product'/>">Sản phẩm</a>
-    <c:if test="${empty sessionScope.account}">
-        <a href="<c:url value='/login'/>">Đăng nhập</a>
-        <a href="<c:url value='/register'/>">Đăng ký</a>
-    </c:if>
-    <c:if test="${not empty sessionScope.account}">
-        <a href="#">Chào, ${sessionScope.account.fullName}</a>
-        <a href="<c:url value='/logout'/>">Đăng xuất</a>
-    </c:if>
+<!-- Hero Section -->
+<div class="p-5 text-center bg-white rounded-3 shadow-sm mb-5 mt-3">
+    <h1 class="display-5 fw-bold text-primary mb-3">Chào mừng đến với E-Shop</h1>
+    <p class="lead text-muted">Khám phá những sản phẩm công nghệ mới nhất với mức giá ưu đãi.</p>
+    <a href="<c:url value='/product'/>" class="btn btn-primary btn-lg mt-3 px-4 rounded-pill">Khám phá ngay <i class="fa-solid fa-arrow-right ms-2"></i></a>
 </div>
 
-<div class="container">
-    <h2 class="section-title">Sản phẩm mới nhất (Top 10)</h2>
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0 text-dark border-start border-4 border-primary ps-3">Sản phẩm mới nhất</h3>
+        <a href="<c:url value='/product'/>" class="text-decoration-none text-primary fw-semibold">Xem tất cả <i class="fa-solid fa-chevron-right ms-1"></i></a>
+    </div>
     
-    <div class="product-grid">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
         <c:forEach items="${latestProducts}" var="prod">
-            <div class="product-card">
-                <c:if test="${prod.image != null && prod.image.startsWith('http')}">
-                    <c:url value="${prod.image}" var="imgUrl"></c:url>
-                </c:if>
-                <c:if test="${prod.image == null || !prod.image.startsWith('http')}">
-                    <c:url value="/image?fname=${prod.image}" var="imgUrl"></c:url>
-                </c:if>
-                <img class="product-image" src="${imgUrl}" alt="${prod.productName}" />
-                
-                <h3 class="product-title">${prod.productName}</h3>
-                <div class="product-price">${prod.price} VNĐ</div>
-                <a href="<c:url value='/product/detail?id=${prod.productId}'/>" class="product-link">Xem chi tiết</a>
+            <div class="col">
+                <div class="card h-100 product-card border-0">
+                    <c:if test="${prod.image != null && prod.image.startsWith('http')}">
+                        <c:url value="${prod.image}" var="imgUrl"></c:url>
+                    </c:if>
+                    <c:if test="${prod.image == null || !prod.image.startsWith('http')}">
+                        <c:url value="/image?fname=${prod.image}" var="imgUrl"></c:url>
+                    </c:if>
+                    <div class="p-3 bg-white text-center">
+                        <img class="card-img-top product-image rounded" src="${imgUrl}" alt="${prod.productName}" />
+                    </div>
+                    <div class="card-body d-flex flex-column bg-light rounded-bottom">
+                        <h6 class="card-title text-truncate fw-bold mb-2" title="${prod.productName}">${prod.productName}</h6>
+                        <p class="card-text text-danger fw-bold fs-5 mb-3">${prod.price} ₫</p>
+                        <a href="<c:url value='/product/detail?id=${prod.productId}'/>" class="btn btn-outline-primary mt-auto w-100 fw-semibold rounded-pill">Xem chi tiết</a>
+                    </div>
+                </div>
             </div>
         </c:forEach>
     </div>

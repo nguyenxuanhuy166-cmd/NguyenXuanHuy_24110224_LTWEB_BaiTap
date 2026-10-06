@@ -72,38 +72,46 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public Product findById(int productId) {
 		EntityManager enma = JPAConfig.getEntityManager();
-		Product product = enma.find(Product.class, productId);
-		enma.close();
-		return product;
+		try {
+			return enma.find(Product.class, productId);
+		} finally {
+			enma.close();
+		}
 	}
 
 	@Override
 	public List<Product> findAll() {
 		EntityManager enma = JPAConfig.getEntityManager();
-		TypedQuery<Product> query = enma.createNamedQuery("Product.findAll", Product.class);
-		List<Product> list = query.getResultList();
-		enma.close();
-		return list;
+		try {
+			TypedQuery<Product> query = enma.createNamedQuery("Product.findAll", Product.class);
+			return query.getResultList();
+		} finally {
+			enma.close();
+		}
 	}
 
 	@Override
 	public List<Product> findAll(int page, int pagesize) {
 		EntityManager enma = JPAConfig.getEntityManager();
-		TypedQuery<Product> query = enma.createNamedQuery("Product.findAll", Product.class);
-		query.setFirstResult(page * pagesize);
-		query.setMaxResults(pagesize);
-		List<Product> list = query.getResultList();
-		enma.close();
-		return list;
+		try {
+			TypedQuery<Product> query = enma.createNamedQuery("Product.findAll", Product.class);
+			query.setFirstResult(page * pagesize);
+			query.setMaxResults(pagesize);
+			return query.getResultList();
+		} finally {
+			enma.close();
+		}
 	}
 
 	@Override
 	public int count() {
 		EntityManager enma = JPAConfig.getEntityManager();
-		String jpql = "SELECT count(p) FROM Product p";
-		Query query = enma.createQuery(jpql);
-		int count = ((Long) query.getSingleResult()).intValue();
-		enma.close();
-		return count;
+		try {
+			String jpql = "SELECT count(p) FROM Product p";
+			Query query = enma.createQuery(jpql);
+			return ((Long) query.getSingleResult()).intValue();
+		} finally {
+			enma.close();
+		}
 	}
 }

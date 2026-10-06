@@ -8,8 +8,9 @@ import jakarta.persistence.PersistenceContext;
 
 @PersistenceContext
 public class JPAConfig {
+	private static final EntityManagerFactory factory = Persistence.createEntityManagerFactory("jpa-hibernate-mysql");
+
 	public static EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("jpa-hibernate-mysql");
 		return factory.createEntityManager();
 	}
 }

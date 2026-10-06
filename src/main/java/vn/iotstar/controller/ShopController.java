@@ -26,7 +26,14 @@ public class ShopController extends HttpServlet {
 		
 		String pageParam = req.getParameter("page");
 		if (pageParam != null && !pageParam.isEmpty()) {
-			page = Integer.parseInt(pageParam) - 1; // 0-indexed
+			try {
+				page = Integer.parseInt(pageParam) - 1; // 0-indexed
+			} catch (NumberFormatException e) {
+				page = 0;
+			}
+			if (page < 0) {
+				page = 0;
+			}
 		}
 		
 		List<Product> products = productService.findAll(page, pageSize);

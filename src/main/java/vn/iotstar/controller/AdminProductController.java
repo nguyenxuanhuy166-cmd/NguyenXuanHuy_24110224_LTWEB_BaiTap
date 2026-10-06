@@ -66,17 +66,26 @@ public class AdminProductController extends HttpServlet {
 		String url = req.getRequestURI();
 		if (url.contains("/admin/product/insert")) {
 			String productName = req.getParameter("productName");
-			double price = Double.parseDouble(req.getParameter("price"));
+			String priceStr = req.getParameter("price");
 			String description = req.getParameter("description");
-			int categoryId = Integer.parseInt(req.getParameter("categoryId"));
+			String categoryIdStr = req.getParameter("categoryId");
 			String images = req.getParameter("images");
+
+			double price = 0;
+			int categoryId = 0;
+			try {
+				if (priceStr != null && !priceStr.isEmpty()) price = Double.parseDouble(priceStr);
+				if (categoryIdStr != null && !categoryIdStr.isEmpty()) categoryId = Integer.parseInt(categoryIdStr);
+			} catch (Exception e) {}
 
 			Product product = new Product();
 			product.setProductName(productName);
 			product.setPrice(price);
 			product.setDescription(description);
-			Category cate = cateService.findById(categoryId);
-			product.setCategory(cate);
+			if (categoryId > 0) {
+				Category cate = cateService.findById(categoryId);
+				product.setCategory(cate);
+			}
 
 			String fname = "";
 			String uploadPath = Constant.DIR;
@@ -124,21 +133,38 @@ public class AdminProductController extends HttpServlet {
 		}
 		
 		if (url.contains("/admin/product/update")) {
-			int productId = Integer.parseInt(req.getParameter("productId"));
+			String productIdStr = req.getParameter("productId");
+			int productId = 0;
+			if (productIdStr != null && !productIdStr.isEmpty()) productId = Integer.parseInt(productIdStr);
+			
 			String productName = req.getParameter("productName");
-			double price = Double.parseDouble(req.getParameter("price"));
+			String priceStr = req.getParameter("price");
 			String description = req.getParameter("description");
-			int categoryId = Integer.parseInt(req.getParameter("categoryId"));
+			String categoryIdStr = req.getParameter("categoryId");
 			String images = req.getParameter("images");
 
+			double price = 0;
+			int categoryId = 0;
+			try {
+				if (priceStr != null && !priceStr.isEmpty()) price = Double.parseDouble(priceStr);
+				if (categoryIdStr != null && !categoryIdStr.isEmpty()) categoryId = Integer.parseInt(categoryIdStr);
+			} catch (Exception e) {}
+
 			Product product = productService.findById(productId);
+			if (product == null) {
+				resp.sendRedirect(req.getContextPath() + "/admin/products");
+				return;
+			}
+			
 			String fileold = product.getImage();
 			
 			product.setProductName(productName);
 			product.setPrice(price);
 			product.setDescription(description);
-			Category cate = cateService.findById(categoryId);
-			product.setCategory(cate);
+			if (categoryId > 0) {
+				Category cate = cateService.findById(categoryId);
+				product.setCategory(cate);
+			}
 
 			String fname = "";
 			String uploadPath = Constant.DIR;
